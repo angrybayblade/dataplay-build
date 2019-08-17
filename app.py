@@ -4,11 +4,10 @@ from time import ctime,time
 from hashlib import md5
 import os
 import json
+import sys
 
 from preproc import brief
 from train import linear
-
-import pymongo
 
 models = {
     "linear":linear.Linear,
@@ -17,8 +16,7 @@ models = {
 app = Flask(__name__)
 CORS(app)
 getHex = lambda x: md5(x.encode()).hexdigest()
-
-df = brief.Brief("../extras/master.csv","csv")
+app.secret_key = getHex("viraj")
 
 @app.route("/",methods=['GET'])
 def index():
@@ -26,9 +24,12 @@ def index():
         "msg":"hello"
     })
 
+dataFrames ={
+
+}
 
 @app.route("/upload",methods=['GET','POST'])
-def head():
+def upload():
     data = request.form
     request.files['data'].save(
         os.path.join(
@@ -39,6 +40,9 @@ def head():
         os.path.join("C:\\workspace\\mlplay\server\\data", f"{data['user']}.csv"),
         "csv"
     )
+
+    dataFrames[data['user']] = df
+
     return jsonify({
         "head":list(df.head().values()),
         "columns":list(df.frame.columns),
@@ -48,11 +52,6 @@ def head():
         "description":df.describe()
         })
 
-@app.route("/train",methods=['GET','POST'])
-def train():
-    data = request.get_json()
-    model = models[data['model']]([],[],[],[],hyperparams = data['hyperparams'])
-    return jsonify(data)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0",port=8080,threaded=True)
