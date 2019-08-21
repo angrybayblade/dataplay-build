@@ -41,6 +41,7 @@ def upload():
         "csv"
     )
 
+
     dataFrames[data['user']] = df
 
     return jsonify({
@@ -49,7 +50,8 @@ def upload():
         "dtypes":df.dtypes(),
         "nuniques":df.nunique(),
         "nullvals":df.nullvals(),
-        "description":df.describe()
+        "description":df.describe(),
+        "file_name":request.files['data'].filename
         })
 
 
