@@ -7,6 +7,7 @@ import json
 import sys
 
 from preproc.df import DataFrame
+from preproc.transform import transform
 
 app = Flask(__name__)
 CORS(app)
@@ -19,9 +20,36 @@ def index():
         "msg":"hello"
     })
 
-dataFrames ={
+dfTemplate = {
+    "df":None,
+    "trnasform":[],
+    "visualize":{},
+    "train":{},
+    "user":{}
+}
+
+sessions = {
 
 }
+
+def createSession(**kwargs):
+    kwargs.update({
+        "trnasform":[],
+        "visualize":{},
+        "train":{},
+    })
+    sessions.update({kwargs['user']:kwargs})
+    return kwargs
+
+
+df = DataFrame(os.path.join(
+                "C:\\workspace\\mlplay\server\\data","viraj.csv"
+            ),"csv")
+
+session = createSession(
+                user="viraj",
+                df=df
+            )
 
 @app.route("/upload",methods=['GET','POST'])
 def upload():
@@ -36,6 +64,11 @@ def upload():
                 "C:\\workspace\\mlplay\server\\data",f"{data['user']}.csv"
             ),"csv")
 
+    session = createSession(
+                user=data['user'],
+                df=df
+            )
+
     return jsonify({
             "head":df.head(),
             "description":df.describe(),
@@ -43,7 +76,25 @@ def upload():
             "file_name":request.files['data'].filename
         })
 
+# Transform.py
 
+@app.route("/transform",methods=['POST'])
+def getcolumns():
+    data = request.get_json()
+    
+    if "method" in data:
+        # print (data)
+        col = sessions[data['user']]['df'].getColumn(data['column'])
+        
+        return jsonify({
+            "column":col,
+            "trans":transform(sessions[data['user']]['df'].frame[[data['column']]],data['method'])
+        })
+    else:
+        col = sessions[data['user']]['df'].getColumn(data['column'])
+        return jsonify({
+            "column":col
+        })
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0",port=8080,threaded=True)

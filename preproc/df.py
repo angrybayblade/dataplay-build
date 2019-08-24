@@ -38,6 +38,9 @@ class DataFrame:
             )
         ]
 
+    def getColumn(self,col):
+        return self.frame[col].head().values.tolist()
+
 if __name__ == "__main__":
     df = DataFrame("../../extras/housing.csv","csv")
     print (df.columns())
