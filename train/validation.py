@@ -1,6 +1,9 @@
 from sklearn.metrics import mean_squared_error,mean_absolute_error,r2_score,mean_squared_log_error
 from sklearn.metrics import explained_variance_score,max_error
 import numpy as np
+
+
+
 def rmse(y_true,y_pred):
     #perfrom rmse
     return(np.sqrt(mean_squared_error(y_true,y_pred)))
@@ -24,3 +27,7 @@ def var_score(y_true,y_pred):
 def max(y_true,y_pred):
     return(max_error(y_true,y_pred))
 
+
+evals={
+"root_mean_squared_error":rmse,"mean_squared_error":mse,"mean_absolute_error":mae,"r2_score":r2,"mean_squared_log_error":log,"explained_variance_score":var_score,"max_error":max
+}

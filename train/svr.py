@@ -2,12 +2,16 @@ from sklearn.svm import SVR
 from validation import *
 
 
-class Linear:
-    def __init__(self,train_features,training_labels,testing_features,testing_labels,hyperparams=None,validation_metric=None):
-        self.model = sv(**hyperparams)
-        #self.model.fit(train_features, training_labels)
+class Support_Regressor:
+    def __init__(self,train_features=[[1],[2],[3],[4],[5],[6]],training_labels=[1,4,9,16,25,36],testing_features=[[7],[8],[9],[10],[11],[12]],testing_labels=[49,64,81,100,121,144],hyperparams={},validation_metric="root_mean_squared_error"):
+        self.model = SVR(**hyperparams)
+        self.model.fit(train_features, training_labels)
         self.validation_metric = validation_metric
         self.hyperparams = hyperparams
+        self.train_features=train_features
+        self.training_labels=training_labels
+        self.testing_features=testing_features
+        self.testing_labels=testing_labels
         
     def predict(self,features):
         return self.model.predict(features)
@@ -16,12 +20,6 @@ class Linear:
         return matrix
 
     def validate(self):
-        if self.validation_matric:
-            if self.validation_metric == "rmse":
-                #perfrom rmse
-                return rmse()
-        else:
-            #perform rmse
-            return {
-                
-            }
+         print (evals[self.validation_metric](self.testing_labels,self.predict(self.testing_features)))
+sv=Support_Regressor()
+sv.validate()
