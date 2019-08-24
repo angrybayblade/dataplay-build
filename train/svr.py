@@ -1,4 +1,6 @@
 from sklearn.linear_model import LinearRegression
+from validation import rmse
+
 
 class Linear:
     def __init__(self,train_features,training_labels,testing_features,testing_labels,hyperparams=None,validation_matric=None):
@@ -17,9 +19,7 @@ class Linear:
         if self.validation_matric:
             if self.validation_metric == "rmse":
                 #perfrom rmse
-                return {
-                    "scores":[],
-                }
+                return rmse()
         else:
             #perform rmse
             return {

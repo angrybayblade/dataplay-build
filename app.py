@@ -6,12 +6,7 @@ import os
 import json
 import sys
 
-from preproc import brief
-from train import linear
-
-models = {
-    "linear":linear.Linear,
-}
+from preproc.df import DataFrame
 
 app = Flask(__name__)
 CORS(app)
@@ -36,23 +31,18 @@ def upload():
                 "C:\\workspace\\mlplay\server\\data",f"{data['user']}.csv"
             )
         )
-    df = brief.Brief(
-        os.path.join("C:\\workspace\\mlplay\server\\data", f"{data['user']}.csv"),
-        "csv"
-    )
 
-
-    dataFrames[data['user']] = df
+    df = DataFrame(os.path.join(
+                "C:\\workspace\\mlplay\server\\data",f"{data['user']}.csv"
+            ),"csv")
 
     return jsonify({
-        "head":list(df.head().values()),
-        "columns":list(df.frame.columns),
-        "dtypes":df.dtypes(),
-        "nuniques":df.nunique(),
-        "nullvals":df.nullvals(),
-        "description":df.describe(),
-        "file_name":request.files['data'].filename
+            "head":df.head(),
+            "description":df.describe(),
+            "columns":df.columns(),
+            "file_name":request.files['data'].filename
         })
+
 
 
 if __name__ == "__main__":
