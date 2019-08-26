@@ -1,10 +1,6 @@
 from sklearn.linear_model import LinearRegression
 from validation import *
 
-evals={
-"root_mean_squared_error":rmse,"mean_squared_error":mse,"mean_absolute_error":mae,"r2_score":r2,"mean_squared_log_error":log,"explained_variance_score":var_score,"max_error":max
-}
-
 class Linear:
     def __init__(self,train_features=[[1],[2],[3],[4],[5],[6]],training_labels=[1,4,9,16,25,36],testing_features=[[7],[8],[9],[10],[11],[12]],testing_labels=[49,64,81,100,121,144],hyperparams={"n_jobs":50},validation_metric="root_mean_squared_error"):
         self.model = LinearRegression(**hyperparams)
