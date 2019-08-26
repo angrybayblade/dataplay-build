@@ -81,15 +81,27 @@ def upload():
 @app.route("/transform",methods=['POST'])
 def getcolumns():
     data = request.get_json()
-    
     if "method" in data:
-        # print (data)
+        if data['save']:
+            res = transform(
+                        data['column'],
+                        data['method'],
+                        save=True,
+                        df=sessions[data['user']]['df']
+                )
+            sessions[data['user']]['df'].frame = res
+            return jsonify({
+                "cols":res.columns.tolist()
+            })
+
         col = sessions[data['user']]['df'].getColumn(data['column'])
-        
         return jsonify({
             "column":col,
-            "trans":transform(sessions[data['user']]['df'].frame[[data['column']]],data['method'])
-        })
+            "trans":transform(
+                        sessions[data['user']]['df'].frame[[data['column']]],
+                        data['method'],
+                ),
+            })
     else:
         col = sessions[data['user']]['df'].getColumn(data['column'])
         return jsonify({

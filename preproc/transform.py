@@ -1,40 +1,59 @@
 from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import MinMaxScaler,LabelBinarizer,StandardScaler,Normalizer
-# import pandas as pd
-# import numpy as np
-# df = pd.DataFrame({"x":[1,2,3,np.nan,5,np.nan,7]})
+from sklearn.preprocessing import MinMaxScaler,LabelEncoder,StandardScaler,Normalizer
+from pandas import get_dummies,read_csv
 
-def impute(x):
+
+def impute(x,save=False):
     imp = SimpleImputer(strategy="median")
     return [float(x[0]) for x in imp.fit_transform(x)[:5]]
 
-def label_bin(x):
-    imp = SimpleImputer(strategy="median")
+def labelenc(x,save=False):
+    imp = LabelEncoder()
+    return imp.fit_transform(x).tolist()[:5]
+
+def dummies(x,save=False):
+    if not save:
+        imp = get_dummies(x[x.columns[0]]).head()
+        return {
+                "columns":imp.columns.tolist(),
+                "values":imp.values.tolist()
+            }
+    else:
+        cols = get_dummies(x)
+        return cols       
+
+def minmax(x,save=False):
+    imp = MinMaxScaler(feature_range=(1,10))
     return [float(x[0]) for x in imp.fit_transform(x)[:5]]
 
-def ohe(x):
-    imp = SimpleImputer(strategy="median")
-    return [float(x[0]) for x in imp.fit_transform(x)[:5]]
-
-def minmax(x):
-    imp = MinMaxScaler()
-    return [float(x[0]) for x in imp.fit_transform(x)[:5]]
-
-def stdscale(x):
+def stdscale(x,save=False):
     imp = StandardScaler()
     return [float(x[0]) for x in imp.fit_transform(x)[:5]]
 
-def normalize(x):
+def normalize(x,save=False):
     imp = Normalizer()
     return [float(x[0]) for x in imp.fit_transform(x)[:5]]
 
 t = {
-        "lable-bin":label_bin,
-        "onehotencoder":ohe,
+        "labelenc":labelenc,
+        "dummy":dummies,
         "minmax":minmax,
         "standardscaler":stdscale,
         "normalize":normalize
 }
 
-def transform(col,trans):
-    return t[trans](col)
+
+def transform(col,trans,save=False,df=None):
+    if save:
+        cols = dummies(
+             df.frame[col],
+             save=True
+        )
+        return df.frame.join(cols).drop(columns=[col])
+
+    return t[trans](col,save=save)
+
+
+if __name__ == "__main__":
+        df = read_csv("../../extras/housing.csv")
+        print (dummies(df['ocean_proximity']))
