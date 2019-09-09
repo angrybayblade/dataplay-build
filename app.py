@@ -7,12 +7,18 @@ import json
 import sys
 
 from preproc.df import DataFrame
-from preproc.transform import transform
+from preproc.transform import transform,split
+from train.linear import Linear
+from train.validation import *
 
 app = Flask(__name__)
 CORS(app)
 getHex = lambda x: md5(x.encode()).hexdigest()
 app.secret_key = getHex("viraj")
+
+algos = {
+    "ml/supervised/regression":Linear
+}
 
 @app.route("/",methods=['GET'])
 def index():
@@ -94,6 +100,19 @@ def getcolumns():
                 "cols":res.columns.tolist()
             })
 
+        if data['method'] == 'impute':
+            # col = sessions[data['user']]['df'].getColumn(data['column'])
+            res = transform(
+                            sessions[data['user']]['df'].frame,
+                            data['method'],
+                    )
+            sessions[data['user']]['df'].frame = res['df']
+            return jsonify({
+                "column":[],#col,
+                "trans":[],
+                })
+            
+
         col = sessions[data['user']]['df'].getColumn(data['column'])
         return jsonify({
             "column":col,
@@ -107,6 +126,31 @@ def getcolumns():
         return jsonify({
             "column":col
         })
+
+@app.route("/train",methods=['POST'])
+def train():
+    data = request.get_json()
+    df = sessions[data['user']]['df']
+
+    info = data['model']
+    model = algos[info['type']]
+
+    X,x,Y,y = split(
+            df.frame[data['features']],
+            df.frame[data['label']]
+        )
+
+    model = model(
+            train_features=X,
+            training_labels=Y,
+            testing_features=x,
+            testing_labels=y,
+            hyperparams=info['hyperparams'],
+        )
+    
+    return jsonify({
+        "user":"viraj"
+    })
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0",port=8080,threaded=True)

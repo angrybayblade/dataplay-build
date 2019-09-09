@@ -39,7 +39,7 @@ class DataFrame:
         ]
 
     def getColumn(self,col):
-        return self.frame[col].head().values.tolist()
+        return self.frame[col].head().values.reshape(-1,1).tolist()
 
 if __name__ == "__main__":
     df = DataFrame("../../extras/housing.csv","csv")
