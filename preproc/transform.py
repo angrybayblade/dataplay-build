@@ -63,7 +63,7 @@ imp = Imputer(strategy="median")
 def transform(col,trans,save=False,df=None):
     if trans != "Imputer":
         if save:
-            if trans == "dummy":
+            if trans == "One Hot Encode":
                 cols = dummies(
                 df.frame[col],
                     save=True

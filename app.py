@@ -10,6 +10,7 @@ from preproc.df import DataFrame
 from preproc.transform import transform,split
 from train.linear import Linear
 from train.validation import *
+from visualize.plot import *
 
 app = Flask(__name__)
 CORS(app)
@@ -96,6 +97,7 @@ def getcolumns():
                         df=sessions[data['user']]['df']
                 )
             sessions[data['user']]['df'].frame = res
+            print (res.columns)
             return jsonify({
                 "cols":res.columns.tolist()
             })
@@ -150,6 +152,22 @@ def train():
     
     return jsonify({
         "user":"viraj"
+    })
+
+@app.route("/visualize",methods=['POST'])
+def visulize():
+    data = request.get_json()
+    print(data)
+    x,y,hue = data['x'],data['y'],data['hue']
+    x = sessions[data['user']]['df'].frame[x].values
+    if y:
+        y = sessions[data['user']]['df'].frame[y].values
+    if hue:
+        hue = sessions[data['user']]['df'].frame[hue].values
+
+    plotData = plot(x=x,y=y,chart=data['chart'],hue=hue)
+    return jsonify({
+        "chart":plotData
     })
 
 if __name__ == "__main__":
