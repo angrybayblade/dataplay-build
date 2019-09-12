@@ -157,18 +157,7 @@ def train():
 @app.route("/visualize",methods=['POST'])
 def visulize():
     data = request.get_json()
-    print(data)
-    x,y,hue = data['x'],data['y'],data['hue']
-    x = sessions[data['user']]['df'].frame[x].values
-    if y:
-        y = sessions[data['user']]['df'].frame[y].values
-    if hue:
-        hue = sessions[data['user']]['df'].frame[hue].values
-
-    plotData = plot(x=x,y=y,chart=data['chart'],hue=hue)
-    return jsonify({
-        "chart":plotData
-    })
+    return jsonify(plot(sessions[data['user']]['df'].frame,**data))
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0",port=8080,threaded=True)

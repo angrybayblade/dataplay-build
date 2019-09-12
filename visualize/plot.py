@@ -1,9 +1,31 @@
-import pygal 
-import seaborn as sns
+import numpy as np
 
-def plot(x,chart,y=None,hue=None):
-    if chart == 'Histogram':
-        
-        return {}
-    else:
-        return "Fuck Off"
+def plot(df,x,y,hue,chart,user=None):
+
+    print (chart)
+
+    data = [
+                {
+                    "x":np.random.rand(100).tolist(),
+                    "y":np.random.rand(100).tolist(),
+                    "type": "scatter",
+                    "mode":"markers",
+                    "marker": {"color": "blue"},
+                },
+            ]
+            
+    layout = {
+
+    }
+    
+    return {
+            "data":[
+                        {
+                            "x":np.random.rand(100).tolist(),
+                            "y":np.random.rand(100).tolist(),
+                            "type": "scatter",
+                            "mode":"markers",
+                            "marker": {"color": "blue"},
+                        },
+                    ]
+            }
