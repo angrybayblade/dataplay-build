@@ -1,4 +1,4 @@
-```json
+```javascript
 {
     linear:{
         name:"Linear Regression",
