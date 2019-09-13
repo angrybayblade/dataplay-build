@@ -12,10 +12,10 @@ class DataFrame:
         self.frame = pd.read_csv(file)
 
     def head(self):
-        return self.frame.head().values.tolist()
+        return self.frame.head().fillna(value=0).values.tolist()
 
     def describe(self):
-        a = self.frame.describe().T
+        a = self.frame.describe().fillna(value=0).T
         return [{"name":x,"data":y} for x,y in zip(a.index,a.values.astype(int).tolist())]
 
     def columns(self):
@@ -39,7 +39,7 @@ class DataFrame:
         ]
 
     def getColumn(self,col):
-        return self.frame[col].head().values.reshape(-1,1).tolist()
+        return self.frame[col].head().fillna(value=0).values.reshape(-1,1).tolist()
 
 if __name__ == "__main__":
     df = DataFrame("../../extras/housing.csv","csv")
