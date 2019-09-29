@@ -8,8 +8,10 @@ import sys
 
 from preproc.df import DataFrame
 from preproc.transform import transform,split
-from train.linear import Linear
+
+from train.linear import Regression as LR
 from train.validation import *
+
 from visualize.plot import *
 
 app = Flask(__name__)
@@ -18,7 +20,13 @@ getHex = lambda x: md5(x.encode()).hexdigest()
 app.secret_key = getHex("viraj")
 
 algos = {
-    "ml/supervised/regression":Linear
+    "ml":{
+        "supervised":{
+            "regression":{
+                "linear":LR
+            }
+        }
+    }
 }
 
 @app.route("/",methods=['GET'])
@@ -83,12 +91,31 @@ def upload():
             "file_name":request.files['data'].filename
         })
 
+@app.route("/overview",methods=['POST','GET'])
+def overview():
+    data = request.get_json()
+    df = sessions[data['user']]['df']
+    # print (type(df))
+    return jsonify({
+            "head":df.head(),
+            "description":df.describe(),
+            "columns":df.columns(),
+            "file_name":data['filename']
+        })
+
 # Transform.py
 
 @app.route("/transform",methods=['POST'])
 def getcolumns():
     data = request.get_json()
     if "method" in data:
+        if data['method'] == 'Select':
+            return jsonify(
+                dict(
+                    column=sessions[data['user']]['df'].getColumn(data['column']),
+                    trans=[]
+                )
+            )
         if data['save']:
             res = transform(
                         data['column'],
@@ -98,22 +125,12 @@ def getcolumns():
                 )
             sessions[data['user']]['df'].frame = res
             print (res.columns)
-            return jsonify({
-                "cols":res.columns.tolist()
-            })
-
-        if data['method'] == 'impute':
-            # col = sessions[data['user']]['df'].getColumn(data['column'])
-            res = transform(
-                            sessions[data['user']]['df'].frame,
-                            data['method'],
+            return jsonify(
+                    dict(
+                        cols= res.columns.tolist(),
+                        status=True
                     )
-            sessions[data['user']]['df'].frame = res['df']
-            return jsonify({
-                "column":[],#col,
-                "trans":[],
-                })
-            
+                )
 
         col = sessions[data['user']]['df'].getColumn(data['column'])
         return jsonify({
@@ -124,6 +141,12 @@ def getcolumns():
                 ),
             })
     else:
+        if data['column'] == "Select":
+            return jsonify(
+                    dict(
+                        column=[]
+                    )
+                )
         col = sessions[data['user']]['df'].getColumn(data['column'])
         return jsonify({
             "column":col
@@ -132,27 +155,15 @@ def getcolumns():
 @app.route("/train",methods=['POST'])
 def train():
     data = request.get_json()
-    df = sessions[data['user']]['df']
-
-    info = data['model']
-    model = algos[info['type']]
-
-    X,x,Y,y = split(
-            df.frame[data['features']],
-            df.frame[data['label']]
-        )
-
-    model = model(
-            train_features=X,
-            training_labels=Y,
-            testing_features=x,
-            testing_labels=y,
-            hyperparams=info['hyperparams'],
-        )
+    path = data['traindata']['type'].split("/")
+    model = algos[path[0]][path[1]][path[2]][path[3]]
+    df = sessions[data['user']]['df'].frame
     
-    return jsonify({
-        "user":"viraj"
-    })
+    X,x,Y,y = split(df,data['label'],data['features'])
+
+    print (X,x,Y,y)
+
+    return jsonify(data)
 
 @app.route("/visualize",methods=['POST'])
 def visulize():

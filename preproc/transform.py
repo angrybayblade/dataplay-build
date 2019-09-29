@@ -55,8 +55,11 @@ t = {
         "Normalizer":normalize
 }
 
-def split(x,y):
-    return train_test_split(x,y)
+def split(df,label,features):
+    return train_test_split(
+            df.drop(columns=features),
+            df[label['name']]
+        )
 
 imp = Imputer(strategy="median")
 
@@ -75,12 +78,12 @@ def transform(col,trans,save=False,df=None):
 
         return t[trans](col)
 
-    return {
-        "df": DataFrame(
-                data=imp.fit_transform(col),
-                columns=col.columns
-            )
-    }
+    if save:
+        df.frame[col] = df.frame[col].fillna(method="ffill")
+        return df.frame
+
+    return [i.tolist() for i in col.fillna(method="ffill").values[:5]]
+
 
 if __name__ == "__main__":
         df = read_csv("../../extras/housing.csv")
