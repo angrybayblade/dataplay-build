@@ -1,4 +1,4 @@
-from flask import Flask,request,session,jsonify
+from flask import Flask,request,session,jsonify,render_template,send_from_directory,Response
 from flask_cors import CORS
 from time import ctime,time
 from hashlib import md5
@@ -8,11 +8,10 @@ import sys
 
 from preproc.df import DataFrame
 from preproc.transform import transform,split
-
 from train.linear import Regression as LR
 from train.validation import *
-
 from visualize.plot import *
+
 
 app = Flask(__name__)
 CORS(app)
@@ -29,11 +28,22 @@ algos = {
     }
 }
 
-@app.route("/",methods=['GET'])
-def index():
-    return jsonify({
-        "msg":"hello"
-    })
+@app.route('/static/css/<path>',methods=['GET'])
+def static_css(path):
+    file = open("./templates/static/css/{}".format(path),"r").read()
+    return  Response(file, mimetype='text/css')
+
+@app.route('/static/js/<path>',methods=['GET'])
+def static_js(path):
+    if ".map" in path:
+        return  Response("", mimetype='text/javascript')    
+    file = open("./templates/static/js/{}".format(path),"r").read()
+    return  Response(file, mimetype='text/javascript')
+
+@app.route("/<path>",methods=['GET'])
+def index(path):
+    print (path)
+    return render_template("index.html")
 
 dfTemplate = {
     "df":None,
@@ -66,7 +76,7 @@ session = createSession(
                 df=df
             )
 
-@app.route("/upload",methods=['GET','POST'])
+@app.route("/upload",methods=['POST'])
 def upload():
     data = request.form
     request.files['data'].save(
@@ -91,7 +101,7 @@ def upload():
             "file_name":request.files['data'].filename
         })
 
-@app.route("/overview",methods=['POST','GET'])
+@app.route("/overview",methods=['POST'])
 def overview():
     data = request.get_json()
     df = sessions[data['user']]['df']
