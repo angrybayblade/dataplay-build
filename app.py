@@ -158,12 +158,11 @@ def train():
     path = data['traindata']['type'].split("/")
     model = algos[path[0]][path[1]][path[2]][path[3]]
     df = sessions[data['user']]['df'].frame
-    
     X,x,Y,y = split(df,data['label'],data['features'])
 
-    print (X,x,Y,y)
-
-    return jsonify(data)
+    model = model(X,x,Y,y,data['traindata']['hyperparams'])
+    model.fit()
+    return jsonify(model.validate())
 
 @app.route("/visualize",methods=['POST'])
 def visulize():

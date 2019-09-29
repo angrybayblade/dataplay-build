@@ -58,7 +58,8 @@ t = {
 def split(df,label,features):
     return train_test_split(
             df.drop(columns=features),
-            df[label['name']]
+            df[label['name']],
+            random_state=42
         )
 
 imp = Imputer(strategy="median")
