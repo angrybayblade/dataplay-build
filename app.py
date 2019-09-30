@@ -12,6 +12,7 @@ from train.linear import Regression as LR
 from train.validation import *
 from visualize.plot import *
 
+print (os.getcwd())
 
 app = Flask(__name__)
 CORS(app)
@@ -27,23 +28,6 @@ algos = {
         }
     }
 }
-
-@app.route('/static/css/<path>',methods=['GET'])
-def static_css(path):
-    file = open("./templates/static/css/{}".format(path),"r").read()
-    return  Response(file, mimetype='text/css')
-
-@app.route('/static/js/<path>',methods=['GET'])
-def static_js(path):
-    if ".map" in path:
-        return  Response("", mimetype='text/javascript')    
-    file = open("./templates/static/js/{}".format(path),"r").read()
-    return  Response(file, mimetype='text/javascript')
-
-@app.route("/<path>",methods=['GET'])
-def index(path):
-    print (path)
-    return render_template("index.html")
 
 dfTemplate = {
     "df":None,
@@ -66,7 +50,6 @@ def createSession(**kwargs):
     sessions.update({kwargs['user']:kwargs})
     return kwargs
 
-
 df = DataFrame(os.path.join(
                 "C:\\workspace\\mlplay\server\\data","viraj.csv"
             ),"csv")
@@ -76,17 +59,41 @@ session = createSession(
                 df=df
             )
 
+
+@app.route('/static/css/<path>',methods=['GET'])
+def static_css(path):
+    file = open("./templates/static/css/{}".format(path),"r").read()
+    return  Response(file, mimetype='text/css')
+
+@app.route('/static/js/<path>',methods=['GET'])
+def static_js(path):
+    if ".map" in path:
+        return  Response("", mimetype='text/javascript')    
+    file = open("./templates/static/js/{}".format(path),"r").read()
+    return  Response(file, mimetype='text/javascript')
+
+@app.route("/",methods=['GET'])
+def index():
+    return render_template("index.html")
+
+    
+@app.route("/<path>",methods=['GET'])
+def index_path(path):
+    print (path)
+    return render_template("index.html")
+
+
 @app.route("/upload",methods=['POST'])
 def upload():
     data = request.form
     request.files['data'].save(
         os.path.join(
-                "C:\\workspace\\mlplay\server\\data",f"{data['user']}.csv"
+                os.getcwd(),"data","{}.csv".format(data['user']),
             )
         )
 
     df = DataFrame(os.path.join(
-                "C:\\workspace\\mlplay\server\\data",f"{data['user']}.csv"
+                os.getcwd(),"data","{}.csv".format(data['user']),
             ),"csv")
 
     session = createSession(

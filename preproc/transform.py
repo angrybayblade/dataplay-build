@@ -1,4 +1,3 @@
-from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import MinMaxScaler,LabelEncoder,StandardScaler,Normalizer,Imputer
 from pandas import get_dummies,read_csv,DataFrame
 from sklearn.model_selection import train_test_split
@@ -57,7 +56,7 @@ t = {
 
 def split(df,label,features):
     return train_test_split(
-            df.drop(columns=features),
+            df[features],
             df[label['name']],
             random_state=42
         )

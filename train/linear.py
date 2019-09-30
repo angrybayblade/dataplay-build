@@ -1,5 +1,6 @@
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
+import numpy as np
 
 class Regression:
     def __init__(self,X,x,Y,y,params):
@@ -15,11 +16,15 @@ class Regression:
     
     def validate(self):
         return dict(
-            train=mean_squared_error(
-                self.model.predict(self.X),self.Y
+            train= np.sqrt(
+                mean_squared_error(
+                    self.model.predict(self.X),self.Y
+                )
             ),
-            test=mean_squared_error(
-                self.model.predict(self.x),self.y
+            test=np.sqrt(
+                mean_squared_error(
+                    self.model.predict(self.x),self.y
+                )
             ),
             type="mse"
         )
