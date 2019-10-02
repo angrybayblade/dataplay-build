@@ -1,6 +1,6 @@
 # Data Playground Build
 
-**UI source [Data Play Dev](https://github.com/mr-robot0/dataplay-dev)
+**UI source [Data Play Dev](https://github.com/mr-robot0/dataplay-dev)**
 
     Data playground is simple UI developed in React.js and python's flask framework for playing with your data. You can perform different transformations, create interactive data visualizations and create and tune simple machine learning models.
 
@@ -23,17 +23,17 @@
 **Currently available transformations**
 
 + Numerical
-   1. MinMax Scaler
-   2. Normalizer
-   3. Standard Scaler
+   - MinMax Scaler
+   - Normalizer
+   - Standard Scaler
 
 +  Categorical
-    1. Label Encoding
-    2. Dummy Variables / One Hot Encode
+    - Label Encoding
+    - Dummy Variables / One Hot Encode
 
 ### Visualize
 
-    In this section you can create interective visualization with different hues and sizes. Currently we're using plotly js for graph rendering. 
+> In this section you can create interective visualization with different hues and sizes. Currently we're using plotly js for graph rendering. 
 
 **Currently Available Visualizations**
 
@@ -69,7 +69,7 @@
 
 ### Train 
 
-    This section will allow you to create and tune simple machine learning models. Also this section provides auto validation for your trained model. It automatically plot errors and accuracy scores for your model on the bases of the data you provide. 
+> This section will allow you to create and tune simple machine learning models. Also this section provides auto validation for your trained model. It automatically plot errors and accuracy scores for your model on the bases of the data you provide. 
 
 **Currently Available Algorithms**
 
