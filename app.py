@@ -8,26 +8,14 @@ import sys
 
 from preproc.df import DataFrame
 from preproc.transform import transform,split
-from train.linear import Regression as LR
-from train.validation import *
 from visualize.plot import *
+from train.train import Train
 
-print (os.getcwd())
 
 app = Flask(__name__)
 CORS(app)
 getHex = lambda x: md5(x.encode()).hexdigest()
 app.secret_key = getHex("viraj")
-
-algos = {
-    "ml":{
-        "supervised":{
-            "regression":{
-                "linear":LR
-            }
-        }
-    }
-}
 
 dfTemplate = {
     "df":None,
@@ -50,15 +38,8 @@ def createSession(**kwargs):
     sessions.update({kwargs['user']:kwargs})
     return kwargs
 
-df = DataFrame(os.path.join(
-                "C:\\workspace\\mlplay\server\\data","viraj.csv"
-            ),"csv")
-
-session = createSession(
-                user="viraj",
-                df=df
-            )
-
+if len(sys.argv) > 1:
+    createSession(df=DataFrame("./data/viraj.csv",'csv'),user='viraj')
 
 @app.route('/static/css/<path>',methods=['GET'])
 def static_css(path):
@@ -172,14 +153,29 @@ def getcolumns():
 @app.route("/train",methods=['POST'])
 def train():
     data = request.get_json()
-    path = data['traindata']['type'].split("/")
-    model = algos[path[0]][path[1]][path[2]][path[3]]
+
     df = sessions[data['user']]['df'].frame
     X,x,Y,y = split(df,data['label'],data['features'])
 
-    model = model(X,x,Y,y,data['traindata']['hyperparams'])
-    model.fit()
-    return jsonify(model.validate())
+    model = Train(X=X,x=x,Y=Y,y=y,**data['traindata'])
+
+    train = model.fit()
+
+    if train[0]:
+        return jsonify(
+            dict(
+                validation=model.validate(),
+                status=True
+            )
+        )
+    else:
+        return jsonify(
+            dict(
+                status=False,
+                msg=str(train[1])
+            )    
+        )
+
 
 @app.route("/visualize",methods=['POST'])
 def visulize():
