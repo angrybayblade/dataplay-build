@@ -8,19 +8,19 @@
 
 ## Usage
 
-    Currently if you're using it on online mode it only supports `csv` files with maximum file size of 10 mb and one file at a time. If we can get enough funding and contribution we can extend these limits or You can download it and use it offline for your data science machine learning projects if you're absolute begginer or somewere between beginner and intermediat skill level without any limitations. 
+> Currently if you're using it on online mode it only supports `csv` files with maximum file size of 10 mb and one file at a time. If we can get enough funding and contribution we can extend these limits or You can download it and use it offline for your data science machine learning projects if you're absolute begginer or somewere between beginner and intermediat skill level without any limitations. 
 
 #### Data
 
-    On the home page you'lll find option to uplaod your file. Make sure it's csv. It will give you an overview of your data such as the head, decription and column info such column data type, it's categorical or not  , number of null values and number of unique values.
+> On the home page you'lll find option to uplaod your file. Make sure it's csv. It will give you an overview of your data such as the head, decription and column info such column data type, it's categorical or not  , number of null values and number of unique values.
 
-    This overview data will update with every cleaning operation you perform and every transformation you make.
+> This overview data will update with every cleaning operation you perform and every transformation you make.
 
 ### Transform
 
-    Here you can preview your columns and apply different cleaning operations and transformations. For cleaning purposes we've only implemeted Imputer but we'll soon add custom transformations.
+> Here you can preview your columns and apply different cleaning operations and transformations. For cleaning purposes we've only implemeted Imputer but we'll soon add custom transformations.
 
-**Currently available transformations
+**Currently available transformations**
 
 + Numerical
    1. MinMax Scaler
@@ -35,34 +35,34 @@
 
     In this section you can create interective visualization with different hues and sizes. Currently we're using plotly js for graph rendering. 
 
-**Currently Available Visualizations
+**Currently Available Visualizations**
 
-+ Bar 
+1. Bar 
     - x : required / categorical
     - y : optional / will perforom average of y over x / numerical
     - hue : categorical
 
-+ Line
+2. Line
     - x : required / numerical or categorical
     - y : optional / will plot x vs y line / numerical 
     - hue : not available / will add
 
-+ Scatter
+3. Scatter
     - x : required / numerical or categorical
     - y : required / numercial or categorical
     - hue : categorical
 
-+ Histogram
+4. Histogram
     - x : required / numerical
     - y : na
     - hue : not available / will add
 
-+ Pie / Donut
+5. Pie / Donut
     - x : required / categorical
     - y : na
     -hue : not available / will add
  
-+ Box 
+6. Box 
     - x : required / numerical
     - y : optional / will act as hue / categorical 
     - hue : use y
@@ -71,7 +71,7 @@
 
     This section will allow you to create and tune simple machine learning models. Also this section provides auto validation for your trained model. It automatically plot errors and accuracy scores for your model on the bases of the data you provide. 
 
-**Currently Available Algorithms
+**Currently Available Algorithms**
 
 1. Linear Regression
 2. Logistic Regression
