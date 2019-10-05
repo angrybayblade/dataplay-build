@@ -2,9 +2,9 @@
 
 **UI source [Data Play Dev](https://github.com/mr-robot0/dataplay-dev)**
 
-    Data playground is simple UI developed in React.js and python's flask framework for playing with your data. You can perform different transformations, create interactive data visualizations and create and tune simple machine learning models.
+> Data playground is simple UI developed in React.js and python's flask framework for playing with your data. You can perform different transformations, create interactive data visualizations and create and tune simple machine learning models.
 
-    Data Play uses Flask as back end service for UI and React js for single page interactive web application experiance. For plotting i'm using plotly js as in-browser graph rendering engine. For data related operations such as cleaning, transforming and model training it uses 
+> Data Play uses Flask as back end service for UI and React js for single page interactive web application experiance. For plotting i'm using plotly js as in-browser graph rendering engine. For data related operations such as cleaning, transforming and model training it uses 
 
 ## Usage
 

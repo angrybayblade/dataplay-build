@@ -12,6 +12,8 @@ from visualize.plot import *
 from train.train import Train
 
 
+debug = True
+
 app = Flask(__name__)
 CORS(app)
 getHex = lambda x: md5(x.encode()).hexdigest()
@@ -27,7 +29,7 @@ dfTemplate = {
 
 sessions = {
 
-}
+}    
 
 def createSession(**kwargs):
     kwargs.update({

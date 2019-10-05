@@ -1,33 +1,39 @@
-from sklearn.metrics import mean_squared_error,mean_absolute_error,r2_score,mean_squared_log_error
-from sklearn.metrics import explained_variance_score,max_error
+from sklearn.metrics import mean_squared_error,precision_score,recall_score,f1_score,confusion_matrix
 import numpy as np
 
+def validate(t,model,X,x,Y,y):
+    if t == 'regression':
+        train_error = np.sqrt(
+                mean_squared_error(
+                    Y,model.predict(X)
+                )
+            )
+        test_error = np.sqrt(
+                    mean_squared_error(
+                    y,model.predict(x)
+                )            
+            )
+        return dict(
+                train_error=train_error,
+                test_error=test_error,
+                type=t
+            )
 
+    else:
+        y_pred = model.predict(x)
+        Y_pred = model.predict(X)
+        train_score = f1_score(
+                Y,Y_pred
+            )
+        test_score = f1_score(
+                y,y_pred
+            )
+        confusion_mat = confusion_matrix(y,y_pred).tolist()
 
-def rmse(y_true,y_pred):
-    #perfrom rmse
-    return(np.sqrt(mean_squared_error(y_true,y_pred)))
+        return dict(
+                test_score=test_score,
+                train_score=train_score,
+                confusion=confusion_mat,
+                type=t
+            )
 
-def mse(y_true,y_pred):
-    return(mean_squared_error(y_true,y_pred))
-
-def mae(y_true,y_pred):
-    return(mean_absolute_error(y_true,y_pred))
-
-
-def r2(y_pred,y_true):
-    return(r2_score(y_true,y_pred))
-
-def log(y_true,y_pred):
-    return(mean_squared_log_error(y_true,y_pred))
-
-def var_score(y_true,y_pred):
-    return(explained_variance_score(y_true,y_pred))
-
-def max(y_true,y_pred):
-    return(max_error(y_true,y_pred))
-
-
-evals={
-"root_mean_squared_error":rmse,"mean_squared_error":mse,"mean_absolute_error":mae,"r2_score":r2,"mean_squared_log_error":log,"explained_variance_score":var_score,"max_error":max
-}
