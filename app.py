@@ -5,6 +5,9 @@ from hashlib import md5
 import os
 import json
 import sys
+from warnings import filterwarnings
+
+filterwarnings("ignore")
 
 from preproc.df import DataFrame
 from preproc.transform import transform,split
@@ -157,11 +160,29 @@ def train():
     data = request.get_json()
 
     df = sessions[data['user']]['df'].frame
-    X,x,Y,y = split(df,data['label'],data['features'])
+    try:
+        X,x,Y,y = split(df,data['label'],data['features'])
+    except KeyError as e:
+        return jsonify(
+            dict(
+                status=False,
+                msg="Please Select Label"
+            )
+        )
 
-    model = Train(X=X,x=x,Y=Y,y=y,**data['traindata'])
+    print (data['traindata']['hyperparams'])
 
-    train = model.fit()
+    try:
+        model = Train(X=X,x=x,Y=Y,y=y,**data['traindata'])
+        train = model.fit()
+    except ValueError as e: 
+        return jsonify(
+            dict(
+                status=False,
+                msg=str(e)
+            )
+        )
+    
 
     if train[0]:
         return jsonify(

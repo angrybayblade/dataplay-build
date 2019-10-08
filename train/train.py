@@ -16,6 +16,8 @@ class Train:
             self.model.fit(self.X,self.Y)
             return True,None
         except ValueError as e:
+            if "Found array" in str(e):
+                return False,"Please Select Atleast One Feature"
             return False,e
         
     def validate(self):
