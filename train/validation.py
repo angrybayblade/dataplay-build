@@ -1,27 +1,37 @@
-from sklearn.metrics import mean_squared_error,precision_score,recall_score,f1_score,confusion_matrix
+from sklearn.metrics import mean_squared_error,precision_score,recall_score,f1_score,confusion_matrix,r2_score
 import numpy as np
 from sklearn.model_selection import cross_val_score
 
 def validate(t,model,X,x,Y,y,cv=100):
     if t == 'regression':
-        train_error = np.sqrt(
-                mean_squared_error(
-                    Y,model.predict(X)
+        mse = np.sqrt(
+                cross_val_score(
+                    model,X,Y,
+                    cv=cv,
+                    scoring=lambda *args:mean_squared_error(
+                        args[2],
+                        args[0].predict(
+                            args[1]
+                        )
+                    )
                 )
-            )
-        test_error = np.sqrt(
-                    mean_squared_error(
-                    y,model.predict(x)
-                )            
-            )
-        reg_lin = model.predict(X)
+        ).tolist()
+
+        r2_error = cross_val_score(
+                    model,X,Y,
+                    cv=cv,
+                    scoring=lambda *args:r2_score(
+                        args[2],
+                        args[0].predict(
+                            args[1]
+                        )
+                    )
+                ).tolist()
+
+
         return dict(
-                train_error=train_error,
-                test_error=test_error,
-                reg_line = dict(
-                    scatter=[X,Y],
-                    reg_line=[reg_lin,Y]
-                ),
+                mse=mse,
+                r2_error=r2_error,
                 type=t
             )
 
